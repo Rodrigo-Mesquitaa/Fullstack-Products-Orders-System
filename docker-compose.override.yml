@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  # 🔹 Backend - modo desenvolvimento
+  backend:
+    container_name: nest-backend-dev
+    command: npm run start:dev
+    volumes:
+      - ./backend:/app          # monta o código fonte local
+      - /app/node_modules       # evita sobrescrever node_modules dentro do container
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${BACKEND_JWT_SECRET}
+    ports:
+      - "${BACKEND_PORT}:3001"
+
+  # 🔹 Frontend - modo desenvolvimento
+  frontend:
+    container_name: next-frontend-dev
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://backend:3001
+    ports:
+      - "${FRONTEND_PORT}:3000"
